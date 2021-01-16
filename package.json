@@ -1,0 +1,28 @@
+{
+  "name": "hxs-repl",
+  "version": "0.1.0",
+  "description": "An online REPL of `hxs`.",
+  "author": "3h",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "rollup -c",
+    "test": "node dev-server"
+  },
+  "repository": "huang2002/hxs-repl",
+  "devDependencies": {
+    "@babel/core": "^7.10.0",
+    "@babel/preset-env": "^7.10.0",
+    "@rollup/plugin-babel": "^5.2.0",
+    "herver": "^0.6.0",
+    "rollup": "^2.36.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "terser": "^5.2.0"
+  },
+  "dependencies": {
+    "3h-ast": "^0.4.2",
+    "3h-term": "^0.1.1",
+    "hxs": "^0.2.0",
+    "super-x": "^1.0.0"
+  }
+}
