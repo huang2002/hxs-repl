@@ -13,6 +13,23 @@ const STYLE = {
 
 const context = new Map(HXS.builtins);
 
+context.set('print', (rawArgs, ctx, env) => {
+    const data = HXS.evalList(rawArgs, ctx, env.fileName);
+    terminal.writeln(data.join(' '), STYLE.PRINT);
+});
+
+context.set('__repl', HXS.Common.createDict({
+    // __repl.setPrompt
+    setPrompt(rawArgs, context, env) {
+        const args = HXS.evalList(rawArgs, context, env.fileName);
+        HXS.Common.checkArgs(args, env, '__repl.setPrompt', 1, 1);
+        if (typeof args[0] !== 'string') {
+            HXS.Common.raise(TypeError, 'expect a string as prompt', env);
+        }
+        terminal.$prompt.setSync(args[0]);
+    },
+}));
+
 const terminal = new T.Terminal(
     {
         position: 'fixed',
@@ -37,9 +54,12 @@ const terminal = new T.Terminal(
     },
 );
 
-context.set('print', (rawArgs, ctx, env) => {
-    const data = HXS.evalList(rawArgs, ctx, env.fileName);
-    terminal.writeln(data.join(' '), STYLE.PRINT);
-});
-
 document.body.appendChild(terminal.container);
+
+terminal.write('Welcome to the online REPL environment of ')
+    .write('hxs', { color: '#FFF' })
+    .writeln('!');
+
+terminal.writeln('Type your code in the text input at the bottom and press Enter to run it.');
+
+terminal.writeln('Use `__repl` to interact with REPL environment.');
