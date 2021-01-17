@@ -13,21 +13,31 @@ const STYLE = {
 
 const context = new Map(HXS.builtins);
 
-context.set('print', (rawArgs, ctx, env) => {
-    const data = HXS.evalList(rawArgs, ctx, env.fileName);
-    terminal.writeln(data.join(' '), STYLE.PRINT);
-});
+context.set('print', HXS.Common.injectHelp(
+    'print(data...)',
+    (rawArgs, ctx, env) => {
+        const data = HXS.evalList(rawArgs, ctx, env.fileName);
+        for (let i = 0; i < data.length; i++) {
+            if (typeof data[i] !== 'string') {
+                HXS.Common.raise(TypeError, 'expect only strings', env);
+            }
+        }
+        terminal.writeln(data.join(' '), STYLE.PRINT);
+    }
+));
 
 context.set('__repl', HXS.Common.createDict({
-    // __repl.setPrompt
-    setPrompt(rawArgs, context, env) {
-        const args = HXS.evalList(rawArgs, context, env.fileName);
-        HXS.Common.checkArgs(args, env, '__repl.setPrompt', 1, 1);
-        if (typeof args[0] !== 'string') {
-            HXS.Common.raise(TypeError, 'expect a string as prompt', env);
+    setPrompt: HXS.Common.injectHelp(
+        '__repl.setPrompt(str)',
+        (rawArgs, context, env) => {
+            const args = HXS.evalList(rawArgs, context, env.fileName);
+            HXS.Common.checkArgs(args, env, '__repl.setPrompt', 1, 1);
+            if (typeof args[0] !== 'string') {
+                HXS.Common.raise(TypeError, 'expect a string as prompt', env);
+            }
+            terminal.$prompt.setSync(args[0]);
         }
-        terminal.$prompt.setSync(args[0]);
-    },
+    ),
 }));
 
 const terminal = new T.Terminal(
