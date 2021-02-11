@@ -11,18 +11,18 @@
   },
   "repository": "huang2002/hxs-repl",
   "devDependencies": {
-    "@babel/core": "^7.10.0",
-    "@babel/preset-env": "^7.10.0",
-    "@rollup/plugin-babel": "^5.2.0",
+    "@babel/core": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
+    "@rollup/plugin-babel": "^5.2.3",
     "herver": "^0.6.0",
-    "rollup": "^2.38.0",
+    "rollup": "^2.38.5",
     "rollup-plugin-terser": "^7.0.2",
     "terser": "^5.2.0"
   },
   "dependencies": {
     "3h-ast": "^0.4.2",
     "3h-term": "^0.1.2",
-    "hxs": "^0.6.1",
+    "hxs": "^0.7.0",
     "super-x": "^1.0.0"
   }
 }
