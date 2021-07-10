@@ -4,41 +4,47 @@ const STYLE = {
         color: '#F00',
     },
     ECHO: {
-        color: '#DDD',
+        color: '#CCC',
     },
     PRINT: {
         color: '#FFF',
     },
 };
 
-const context = new Map(HXS.builtins);
+const store = new Map(HXS.builtins);
 
-context.set('print', HXS.Common.injectHelp(
+store.set('print', HXS.Utils.injectHelp(
     'print(data...)',
-    (rawArgs, ctx, env) => {
-        const data = HXS.evalList(rawArgs, ctx, env.fileName);
-        for (let i = 0; i < data.length; i++) {
-            if (typeof data[i] !== 'string') {
-                HXS.Common.raise(TypeError, 'expect only strings', env);
-            }
-        }
-        terminal.writeln(data.join(' '), STYLE.PRINT);
-    }
+    HXS.createFunctionHandler(1, Infinity, (args, referrer, context) => {
+        terminal.writeln(
+            args.map(data => HXS.Utils.toString(data))
+                .join(''),
+            STYLE.PRINT
+        );
+        return null;
+    })
 ));
 
-context.set('__repl', HXS.Common.createDict({
-    setPrompt: HXS.Common.injectHelp(
-        '__repl.setPrompt(str)',
-        (rawArgs, context, env) => {
-            const args = HXS.evalList(rawArgs, context, env.fileName);
-            HXS.Common.checkArgs(args, env, '__repl.setPrompt', 1, 1);
-            if (typeof args[0] !== 'string') {
-                HXS.Common.raise(TypeError, 'expect a string as prompt', env);
-            }
-            terminal.$prompt.setSync(args[0]);
-        }
-    ),
-}));
+store.set('__repl', HXS.Utils.injectHelp(
+    'REPL Manager',
+    HXS.Utils.createDict({
+        setPrompt: HXS.Utils.injectHelp(
+            '__repl.setPrompt(str)',
+            HXS.createFunctionHandler(1, 1, (args, referrer, context) => {
+                if (typeof args[0] !== 'string') {
+                    HXS.Utils.raise(TypeError, 'expect a string as prompt', referrer, context);
+                }
+                terminal.$prompt.setSync(args[0]);
+                return null;
+            })
+        ),
+    })
+));
+
+const context = {
+    store,
+    source: 'repl',
+};
 
 const terminal = new T.Terminal(
     {
@@ -53,8 +59,8 @@ const terminal = new T.Terminal(
     input => {
         try {
             terminal.writeln(
-                HXS.Common.toString(
-                    HXS.evalCode(input, context, '<repl>')
+                'Result: ' + HXS.Utils.toDisplay(
+                    HXS.evalCode(input, context)
                 ),
                 STYLE.ECHO,
             );
