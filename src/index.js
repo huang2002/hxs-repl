@@ -11,9 +11,9 @@ const STYLE = {
     },
 };
 
-const store = new Map(HXS.builtins);
+const store = HXS.Utils.createDict(HXS.builtins);
 
-store.set('print', HXS.Utils.injectHelp(
+store.print = HXS.Utils.injectHelp(
     'print(data...)',
     HXS.createFunctionHandler(1, Infinity, (args, referrer, context) => {
         terminal.writeln(
@@ -23,9 +23,9 @@ store.set('print', HXS.Utils.injectHelp(
         );
         return null;
     })
-));
+);
 
-store.set('__repl', HXS.Utils.injectHelp(
+store.__repl = HXS.Utils.injectHelp(
     'REPL Manager',
     HXS.Utils.createDict({
         setPrompt: HXS.Utils.injectHelp(
@@ -39,7 +39,7 @@ store.set('__repl', HXS.Utils.injectHelp(
             })
         ),
     })
-));
+);
 
 const context = {
     store,
