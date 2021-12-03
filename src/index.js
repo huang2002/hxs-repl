@@ -65,7 +65,7 @@ const terminal = new T.Terminal(
                 STYLE.ECHO,
             );
         } catch (error) {
-            terminal.writeln('Error: ' + error.message, STYLE.ERROR);
+            terminal.writeln(String(error), STYLE.ERROR);
         }
     },
 );
