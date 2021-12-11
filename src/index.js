@@ -58,10 +58,10 @@ const terminal = new T.Terminal(
     },
     input => {
         try {
+            const result = HXS.evalCode(input, context);
+            const resultDisplay = HXS.Utils.toDisplay(result);
             terminal.writeln(
-                'Result: ' + HXS.Utils.toDisplay(
-                    HXS.evalCode(input, context)
-                ),
+                `REPL Result: ${resultDisplay}`,
                 STYLE.ECHO,
             );
         } catch (error) {
